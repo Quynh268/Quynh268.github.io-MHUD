@@ -1,0 +1,86 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+}
+.header {
+    background-color: darkblue;
+    color: white;
+    font-size: 20px;
+    margin: 0 auto;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 10px;
+    text-align: center;
+}
+.menu {
+    padding: 5px;
+    text-align: center;
+}
+.menu a {
+    color: black;
+    text-decoration: none;
+    display: inline-block;
+}
+.menu a.selected {
+    color: white;
+}
+.menu li {
+    display: inline-block;
+    background-color: peru;
+    border-style: solid groove;
+    height: 50px;
+    width: 160px;
+    line-height: 50px;
+    position: relative;
+    text-align: center;
+}
+.menu ul li:hover {
+    background: darkgrey;
+    color: rgb(188, 50, 50);
+}
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+.content-left {
+    grid-column: 1 / 2;
+}  
+.content-right {
+    grid-column: 2 / 3;
+}
+.box-code {
+    display: inline-block;
+    width: 70%;
+    min-width: 200px;
+}
+.button {
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    margin: 6px;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.5s;
+    cursor: pointer;
+}
+.button1 {
+    background-color: #4CAF50;
+}
+.button1:hover {
+    background-color: white;
+    color: black;
+    border: 2px solid #4CAF50;
+}
+.button2 {
+    background-color: #f44336;
+}
+.button2:hover {
+    background-color: white;
+    color: black;
+    border: 2px solid #f44336;
+}

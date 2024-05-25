@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mã Hóa Và Ứng Dụng</title>
+        <link rel="stylesheet" href="main.css">
+    </head>
+    <body>
+    <body>
+        <div class="header">
+            Mã Hóa và Ứng Dụng - Đề Tài 2
+        </div>
+        <div class="menu">
+            <ul>
+                <!-- <li><a href="index.html">Trang Chủ</a></li> -->
+                <li><a href="#" id="vigenere" onclick="select('vigenere')">Vigenere</a></li>
+                <li><a href="#" id="otp" onclick="select('otp')">One Time Pad</a></li>
+                <li><a href="#" id="fence" onclick="select('fence')">Mã Hóa Hàng Rào</a></li>
+            </ul>
+        </div>
+        <div>            
+            <div style="max-width: 100%;">
+                <label for="khóa">Khóa:</label>
+                <input type="text" id="key" name="key" placeholder="Nhập khóa..." required>
+            </div>
+            <div class="container">
+                <div class="content-left">
+                    <form>
+                        Mã hóa:
+                        <div>
+                            <label>Bản rõ</label><br>
+                            <div class="box-code">
+                                <textarea id="plaintext" style="width: 100%; resize: none;" rows="5" placeholder="Thông điệp cần mã hóa..."></textarea>
+                            </div>
+                            <div style="display: inline-block; vertical-align: top;">
+                                <input type="button" id="encr" value="Encrypt" onclick="encrypt()" class="button button1">
+                                <button type="button" onclick="clearInput('plaintext')">Xóa</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label>Bản mờ</label><br>
+                            <div class="box-code">
+                                <textarea id="ciphertext" style="width: 100%; resize: none;" rows="5" placeholder="Thông điệp đã mã hóa..."></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="content-right">
+                    <form>
+                        Giải mã:
+                        <div>
+                            <label>Bản mờ</label><br>
+                            <div class="box-code">
+                                <textarea id="cipher" style="width: 100%; resize: none;" rows="5" placeholder="Thông điệp cần giải mã..."></textarea>
+                            </div>
+                            <div style="display: inline-block; vertical-align: top;">
+                                <input type="button" id="decr" value="Decrypt" onclick="decrypt()" class="button button2">
+                                <button onclick="clearInput('cipher')">Xóa</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label>Bản rõ</label><br>
+                            <div class="box-code">
+                                <textarea id="plain" style="width: 100%; resize: none;" rows="5" placeholder="Thông điệp đã được giải mã..."></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+            function clearInput(elementId)
+            {
+                document.getElementById(elementId).value = '';
+            }
+
+            function vigenereEncode(input, key)
+            {
+                let result = '';
+                for (let i = 0; i < input.length; i++)
+                {
+                    let inputChar = input.charCodeAt(i);
+                    let keyChar = key.charCodeAt(i % key.length);
+                    if (inputChar >= 65 && inputChar <= 90)
+                        result += String.fromCharCode(((inputChar - 65 + keyChar - 65) % 26) + 65);
+                    else if (inputChar >= 97 && inputChar <= 122)
+
+                        result += String.fromCharCode(((inputChar - 97 + keyChar - 97) % 26) + 97);
+                    else
+                        result += input[i];
+                }
+                return result;
+            }
+            function vigenereDecode(encodedText, key)
+            {
+            // ... giải mã Vigenere ...
+            }
+            ///////////////////////////////////////////
+            // function checkCharacterType(mess)
+            // {
+            //     for (let i = 0; i < mess.length; i++)
+            //     {
+            //         let c = mess[i];
+            //         if (/^[a-zA-Z0-9]$/.test(c))
+            //             console.log(" Ki tu " + c);
+            //         else {
+            //             let hex = c.charCodeAt(0).toString(16).toUpperCase();
+            //             console.log(" Ki tu " + c + "\tHex: " + hex);
+            //         }
+            //         console.log("\t Binary: " + c.charCodeAt(0).toString(2).padStart(8, '0'));
+            //     }
+            // }
+            function checkType(mess)
+            {
+                let result = '';
+
+                for (let i = 0; i < mess.length; i++)
+                {
+                    let c = mess[i];
+                    let hex = c.charCodeAt(0).toString(16).padStart(2, '0');
+
+                    result += "\n Ki tu " + c + " ";
+                    result += "\t Binary: " + c.charCodeAt(0).toString(2).padStart(8, '0');
+                    result += "\tHex: " + hex;
+                }
+                return result;
+            }
+
+            function hex(input)
+            {
+                let result = '';
+
+                for (let i = 0; i < input.length; i++)
+                {
+                    let hex = input.charCodeAt(i).toString(16).toUpperCase().padStart(2, '0');
+                    result += hex + " ";
+                }
+                return result.trim();
+            }
+
+            function randomKey(length)
+            {
+                let k = '';
+                let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                for (let i = 0; i < length; i++)
+                {
+                    let randomNumber = Math.floor(Math.random() * characters.length);
+                    k += characters[randomNumber];
+                }
+                return k;
+            }
+
+            function oneTimePadEncode(plaintext, key)
+            {
+                if (plaintext.length > key.length)
+                    throw new Error(" (*)Chieu dai khoa phai tuong duong thong diep");
+                let C = '';
+                for (let i = 0; i < plaintext.length; i++)
+                {
+                    let plaintextP = plaintext.charCodeAt(i);
+                    let k = key.charCodeAt(i);
+                    let Encipher = ((plaintextP + k - 32) % 95) + 32;
+                    C += String.fromCharCode(Encipher);
+                }
+                return C;
+            }
+
+            function oneTimePadDecode(enciphertext, key)
+            {
+                if (enciphertext.length != key.length)
+                        throw new Error(" (*)Chieu dai khoa phai tuong duong ban ma.");
+                // let C = atob(enciphertext);
+                let P = '';
+                for (let i = 0; i < enciphertext.length; i++)
+                {
+                    let enciphertextC = enciphertext.charCodeAt(i);
+                    let k = key.charCodeAt(i);
+                    let Decipher = ((enciphertextC - k - 32 + (127 - 32)) % 95) + 32;
+                    P += String.fromCharCode(Decipher);
+                }
+                return P;
+            }
+            ////////////////////////////////////////
+            function railFenceEncode(input, soHang)
+            {
+                if (soHang < 2)
+                    return "Khoa phai lon hon 1.";
+
+                var hang = [];
+                for (var i = 0; i < soHang; i++)
+                {
+                    hang.push('');
+                }
+
+                var chiSoHienTai = 0;
+                while (chiSoHienTai < input.length)
+                {
+                    for (var i = 0; i < soHang && chiSoHienTai < input.length; i++)
+                    hang[i] += input[chiSoHienTai++];
+                }
+
+                var kq = '';
+                for (var i = 0; i < soHang; i++)
+                    kq += hang[i];
+
+                return kq;
+            }
+
+            function railFenceDecode(encodedText, soHang) 
+            {
+                var len = encodedText.length;
+                var arr = new Array(len);
+                var kyTuMoiHang = new Array(soHang);
+                var kyTuChiaHang = Math.floor(len / soHang);
+                var kyTuDu = len % soHang;
+                var chiSoHienTai = 0;
+
+                // Tính số ký tự cho mỗi hàng
+                for (var i = 0; i < soHang; i++)
+                {
+                    kyTuMoiHang[i] = kyTuChiaHang + (i < kyTuDu ? 1 : 0);
+                }
+
+                // Giải mã từng hàng
+                for (var rail = 0; rail < soHang; rail++)
+                {
+                    for (var cot = 0; cot < kyTuMoiHang[rail]; cot++)
+                    {
+                        var viTriHienTai = cot * soHang + rail;
+                        if (viTriHienTai < len)
+                        {
+                            arr[viTriHienTai] = encodedText[chiSoHienTai++];
+                        }
+                    }
+                }
+                return arr.join('');
+            }
+
+            function select(option)
+            {
+            document.getElementById('vigenere').classList.remove('selected');
+            document.getElementById('otp').classList.remove('selected');
+            document.getElementById('fence').classList.remove('selected');
+            document.getElementById(option).classList.add('selected');
+            }
+
+            //Hàm chính lựa chọn
+            function encrypt()
+            {
+                var method = document.querySelector('.menu a.selected').textContent;
+                var key = document.getElementById('key').value;
+                var plaintext = document.getElementById('plaintext').value;
+                var ciphertext;
+
+                switch (method)
+                {
+                    case 'Vigenere':
+                        ciphertext = vigenereEncode(plaintext, key);                            
+                        break;
+                    case 'One Time Pad':
+                    {
+                        if (key == '')
+                        {
+                            key = randomKey(plaintext.length);
+                            document.getElementById('key').value = key;
+                        }
+                        ciphertext = oneTimePadEncode(plaintext, key);
+                    } break;
+                    case 'Mã Hóa Hàng Rào':
+                        ciphertext = railFenceEncode(plaintext, parseInt(key));
+                        break;
+                }
+                document.getElementById('ciphertext').value = ciphertext;
+            }
+
+            function decrypt()
+            {
+                var method = document.querySelector('.menu a.selected').textContent;
+                var key = document.getElementById('key').value;
+                var encodedText = document.getElementById('cipher').value;
+                var plaintext;
+
+                switch (method)
+                {
+                    case 'Vigenere':
+                    plaintext = vigenereDecode(encodedText, key);
+                    break;
+                    case 'One Time Pad':
+                    plaintext = oneTimePadDecode(encodedText, key);
+                    break;
+                    case 'Mã Hóa Hàng Rào':
+                    plaintext = railFenceDecode(encodedText, parseInt(key));
+                    break;
+                }
+                document.getElementById('plain').value = plaintext;
+            }
+        </script>
+    </body>
+</html>
